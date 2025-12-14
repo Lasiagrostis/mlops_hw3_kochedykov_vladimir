@@ -1,7 +1,7 @@
 import os
 import joblib
 import pandas as pd
-from fastapi import FastAPI
+from fastapi import FastAPI, Query
 from pydantic import BaseModel
 
 MODEL_PATH = os.getenv("MODEL_PATH", "models/model.pkl")
@@ -14,37 +14,22 @@ model = joblib.load(MODEL_PATH)
 def health():
     return {"status": "ok", "version": MODEL_VERSION}
 
-@app.get("/predict")
-def predict():
-    return {"prediction": "ok", "version": MODEL_VERSION}
+# @app.get("/predict")
+# def predict():
+#     return {"prediction": "ok", "version": MODEL_VERSION}
 
+class PredictResponse(BaseModel):
+    prediction: int
+    confidence: float
+    version: str
 
-# class PredictRequest(BaseModel):
-#     pclass: int
+@app.get("/predict", response_model=PredictResponse)
+def predict(pclass: int = Query(..., ge=1, le=3)):
+    X = pd.DataFrame([{"Pclass": pclass}])
+    pred_raw = model.predict(X)
+    pred = int(pred_raw[0])
+    probs = model.predict_proba(X)[0]
+    confidence = float(probs.max())
 
+    return PredictResponse(prediction=pred, confidence=confidence, version=MODEL_VERSION)
 
-# class PredictResponse(BaseModel):
-#     prediction: int
-#     confidence: float
-#     version: str
-
-# @app.get("/health")
-# def health():
-#     return {
-#         "status": "ok",
-#         "version": MODEL_VERSION,
-#     }
-
-
-# @app.post("/predict", response_model=PredictResponse)
-# def predict(request: PredictRequest):
-#     df = pd.DataFrame([{"Pclass": request.pclass}])
-
-#     prediction = int(model.predict(df)[0])
-#     confidence = float(model.predict_proba(df)[0].max())
-
-#     return PredictResponse(
-#         prediction=prediction,
-#         confidence=confidence,
-#         version=MODEL_VERSION,
-    # )
