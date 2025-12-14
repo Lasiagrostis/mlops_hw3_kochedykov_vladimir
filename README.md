@@ -15,14 +15,14 @@ docker-compose -f .\docker-compose.green.yml up -d
 5. Поднять контейнер с nginx alpine командой `docker run -d --name nginx-proxy -p 80:80 -v ${PWD}\nginx.conf:/etc/nginx/nginx.conf:ro nginx:alpine`  
 6. Первая версия будет доступна по адресу `http://localhost:8081/`, вторая на `http://localhost:8082/`. Можно проверить "здоровье" конкретной версии модели, например `curl.exe -s http://localhost:8082/predict`. При обращении к `http://localhost` будет задействована та модель, на которую ведёт трафик nginx. По умолчанию это версия blue  
 7. Для переключения модели необходимо закомментировать порт blue и расскоментировать green и перезапустить контейнер `docker exec nginx-proxy nginx -s reload`  
-![Скрин конфига nginx](screenshots\nginx.png)  
+![Скрин конфига nginx](screenshots/nginx.png)  
 
 ### Примеры вывода команд
 - Первая версия модели (blue)  
-![Здоровье модели (blue)](screenshots\blue_health.png)  
-![Предсказание (blue)](screenshots\blue_predict.png)  
+![Здоровье модели (blue)](screenshots/blue_health.png)  
+![Предсказание (blue)](screenshots/blue_predict.png)  
 - После переключения трафика через nginx (green)  
-![Здоровье модели (green)](screenshots\green_health.png)  
-![Предсказание (green)](screenshots\green_predict.png) 
+![Здоровье модели (green)](screenshots/green_health.png)  
+![Предсказание (green)](screenshots/green_predict.png) 
 - Успешно отработанный job в GitHub Actions  
-![GitHub Actions Success](screenshots\github_actions.png)
+![GitHub Actions Success](screenshots/github_actions.png)
