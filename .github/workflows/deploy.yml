@@ -15,5 +15,5 @@ jobs:
           REPO=ghcr.io/lasiagrostis/mlops_hw3_kochedykov_vladimir
           TAG=${GITHUB_SHA}
           docker build -t $REPO:$TAG .
-          echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+          echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
           docker push $REPO:$TAG
